@@ -1,0 +1,11 @@
+version: "3.9"
+services:
+    todo-web-service:
+        build: frontend
+        ports:
+            - "80:80"
+        depends_on:
+            - todo-api-service
+
+    todo-api-service:
+        build: backend
