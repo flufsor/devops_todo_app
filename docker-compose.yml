@@ -9,3 +9,33 @@ services:
 
     todo-api-service:
         build: backend
+        environment:
+            STORAGE: mysql
+            MYSQL_HOST: todo-db-service
+            MYSQL_USER: TodoUser
+            MYSQL_PWD: /run/secrets/db_password
+            MYSQL_DB: examen
+        secrets:
+            - db_password
+        depends_on:
+            - todo-db-service
+
+    todo-db-service:
+        image: mysql:8.0
+        volumes:
+            - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+            - dbdata:/var/lib/mysql
+        environment:
+            MYSQL_DATABASE: examen
+            MYSQL_USER: TodoUser
+            MYSQL_RANDOM_ROOT_PASSWORD: yes
+            MYSQL_PASSWORD: /run/secrets/db_password
+        secrets:
+            - db_password
+
+secrets:
+    db_password:
+        file: db_password.txt
+
+volumes:
+    dbdata:
